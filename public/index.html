@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MMA-MEME | Outside-the-Cage Fighter Reactions &amp; Quotes</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gif.js/0.2.0/gif.js" defer></script>
+</head>
+<body>
+  <!-- GLOBAL STICKY HEADER -->
+  <header class="site-header">
+    <!-- ROW 1: LOGO, SEARCH, ADD MEME & THREE DOTS -->
+    <div class="container header-top">
+      <div class="brand">
+        <h1 class="brand-logo" aria-label="MMA MEMES">
+          <span>MMA</span>
+          <span>MEMES</span>
+        </h1>
+      </div>
+
+      <div class="search-wrap">
+        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input
+          id="searchInput"
+          type="search"
+          class="search-input"
+          placeholder="Search quotes, fighters..."
+          aria-label="Search memes by quote, fighter, or mood"
+        />
+      </div>
+
+      <div class="header-actions">
+        <button type="button" id="openSubmitBtn" class="btn btn-amber add-meme-btn">
+          + Add Meme
+        </button>
+        <button
+          type="button"
+          id="openRatingBtn"
+          class="dots-btn"
+          aria-label="Content Rating (PG)"
+          title="Content Rating: PG"
+        >
+          &#8942;
+        </button>
+      </div>
+    </div>
+
+    <!-- ROW 2: ATHLETES DROPDOWN & MOODS (DROPDOWN ON MOBILE / HORIZONTAL ON DESKTOP) -->
+    <div class="container header-filters">
+      <div class="filters-row">
+        <div class="athlete-dropdown" id="athleteDropdown">
+          <button type="button" id="athleteToggleBtn" class="athlete-toggle-btn" aria-expanded="false" aria-haspopup="true">
+            Athletes (All) ▾
+          </button>
+          <div id="athleteMenu" class="athlete-menu hidden" role="menu">
+            <div class="athlete-menu-actions">
+              <button type="button" id="athleteSelectAllBtn" class="athlete-mini-btn">All</button>
+              <button type="button" id="athleteClearBtn" class="athlete-mini-btn">Clear</button>
+            </div>
+            <div class="athlete-sort-bar" id="athleteSortBar" role="group" aria-label="Sort athletes">
+              <button type="button" data-sort="most" class="athlete-sort-btn active">Most</button>
+              <button type="button" data-sort="least" class="athlete-sort-btn">Least</button>
+              <button type="button" data-sort="az" class="athlete-sort-btn">A-Z</button>
+              <button type="button" data-sort="za" class="athlete-sort-btn">Z-&gt;A</button>
+            </div>
+            <div id="athleteList" class="athlete-list"></div>
+          </div>
+        </div>
+
+        <select id="moodSelect" class="mood-select" aria-label="Filter by fighter mood">
+          <option value="All">All Moods</option>
+          <option value="Deadpan">Deadpan</option>
+          <option value="Confused">Confused</option>
+          <option value="Goofy">Goofy</option>
+          <option value="Smirk">Smirk</option>
+          <option value="Side-Eye">Side-Eye</option>
+          <option value="Hyped">Hyped</option>
+        </select>
+
+        <div id="moodChips" class="mood-chips" aria-label="Filter by fighter expression">
+          <button type="button" data-mood="All" class="mood-btn active">All Moods</button>
+          <button type="button" data-mood="Deadpan" class="mood-btn">Deadpan</button>
+          <button type="button" data-mood="Confused" class="mood-btn">Confused</button>
+          <button type="button" data-mood="Goofy" class="mood-btn">Goofy</button>
+          <button type="button" data-mood="Smirk" class="mood-btn">Smirk</button>
+          <button type="button" data-mood="Side-Eye" class="mood-btn">Side-Eye</button>
+          <button type="button" data-mood="Hyped" class="mood-btn">Hyped</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- OUTSIDE-THE-CAGE INFO BANNER (Shown in Funny Faces Mode) -->
+  <div id="facesBanner" class="faces-banner hidden">
+    <div class="container faces-banner-inner">
+      <span>
+        <strong>Outside-the-Cage Mode:</strong> Curated comedic fighter expressions from pressers &amp; media days. Zero fight damage, zero humiliation.
+      </span>
+      <span class="faces-banner-hint">Click Make GIF on any face to launch the Speed-Up GIF Studio</span>
+    </div>
+  </div>
+
+  <!-- MAIN MEME GRID -->
+  <main class="container main-content">
+    <!-- TOP DISMISSIBLE COMMUNITY RULE BANNER -->
+    <div id="ruleBanner" class="rule-banner">
+      <p class="rule-banner-text">
+        <strong>Community Rule:</strong> Celebrate fighter humor outside the cage. No trash-talking third parties, no fight-injury screenshots, no AI slop, and verified YouTube/social origins only.
+      </p>
+      <button type="button" id="closeRuleBtn" class="rule-close-btn" aria-label="Dismiss Community Rule">&times;</button>
+    </div>
+
+    <div id="memeGrid" class="meme-grid"></div>
+
+    <!-- Empty State -->
+    <div id="emptyState" class="empty-state hidden">
+      <p class="empty-title">No memes found.</p>
+      <p class="empty-subtitle">Send 2-3 years to Dagestan and try another filter.</p>
+      <button type="button" id="resetFiltersBtn" class="btn btn-amber">Reset Filters</button>
+    </div>
+  </main>
+
+  <!-- FLOATING BOTTOM PILL DOCK -->
+  <nav class="floating-dock" aria-label="Library view mode">
+    <div class="mode-tabs" role="tablist">
+      <button type="button" data-mode="all" class="mode-btn active" role="tab" aria-selected="true">
+        All Memes
+      </button>
+      <button type="button" data-mode="quotes" class="mode-btn" role="tab" aria-selected="false">
+        Quote Library
+      </button>
+      <button type="button" data-mode="faces" class="mode-btn" role="tab" aria-selected="false">
+        Fighter Funny Faces
+      </button>
+    </div>
+  </nav>
+
+  <!-- SPEED-UP GIF ENGINE MODAL -->
+  <div id="gifModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="gifModalTitle">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="gifModalTitle" class="modal-title">Speed-Up GIF Studio</h3>
+        <button type="button" id="closeGifBtn" class="modal-close" aria-label="Close GIF Studio">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="canvas-wrap">
+          <canvas id="gifCanvas" width="420" height="250"></canvas>
+        </div>
+
+        <div class="gif-frame-meta">
+          <span id="gifFrameMarkLabel">Default Frame Mark: 0s</span>
+        </div>
+
+        <div class="field-group">
+          <span class="field-label">Animation Speed</span>
+          <div class="speed-grid">
+            <button type="button" data-speed="1" class="speed-btn active">1x Normal</button>
+            <button type="button" data-speed="1.5" class="speed-btn">1.5x Fast</button>
+            <button type="button" data-speed="2" class="speed-btn">2x Meme Speed</button>
+          </div>
+        </div>
+
+        <label class="checkbox-row">
+          <input id="gifCaptionCheck" type="checkbox" checked />
+          <span>Burn quote caption (follows active <strong id="gifRatingLabel">PG</strong> filter)</span>
+        </label>
+
+        <div class="modal-actions">
+          <button type="button" id="downloadGifBtn" class="btn btn-emerald btn-full">
+            Download Animated .GIF
+          </button>
+        </div>
+        <p id="gifStatus" class="status-text"></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADD MEME MODAL (WITH NO-DRAMA GUARDRAIL) -->
+  <div id="submitModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="submitModalTitle">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="submitModalTitle" class="modal-title">Submit Outside-the-Cage Meme</h3>
+        <button type="button" id="closeSubmitBtn" class="modal-close" aria-label="Close submission modal">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="guardrail-notice">
+          <strong>Strict Guardrail:</strong> No shit-talking other parties, no fight-damage photos, and a valid source link is required.
+        </div>
+
+        <form id="submitForm" class="submit-form">
+          <div class="field-group">
+            <label for="newQuote" class="field-label">Fighter Quote or Funny Face Title *</label>
+            <input id="newQuote" type="text" required placeholder="e.g., Chama!" class="form-input" />
+          </div>
+
+          <div class="form-row-2">
+            <div class="field-group">
+              <label for="newFighter" class="field-label">Fighter Name *</label>
+              <input id="newFighter" type="text" required placeholder="e.g., Alex Pereira" class="form-input" />
+            </div>
+            <div class="field-group">
+              <label for="newMood" class="field-label">Expression / Mood *</label>
+              <select id="newMood" class="form-input">
+                <option value="Deadpan">Deadpan</option>
+                <option value="Confused">Confused</option>
+                <option value="Goofy">Goofy</option>
+                <option value="Smirk">Smirk</option>
+                <option value="Side-Eye">Side-Eye</option>
+                <option value="Hyped">Hyped</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field-group">
+            <label for="newRating" class="field-label">Content Rating *</label>
+            <select id="newRating" class="form-input">
+              <option value="PG">PG (Clean)</option>
+              <option value="13+">13+ (Mild)</option>
+              <option value="18+">18+ (Uncensored)</option>
+            </select>
+          </div>
+
+          <div class="field-group">
+            <label for="newUrl" class="field-label">Origin Video / Social Post URL *</label>
+            <input id="newUrl" type="url" required placeholder="https://www.youtube.com/watch?v=..." class="form-input" />
+          </div>
+
+          <p id="formError" class="form-error hidden"></p>
+
+          <button type="submit" class="btn btn-amber btn-full">
+            Add to Local Preview
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTENT RATING MODAL -->
+  <div id="ratingModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="ratingModalTitle">
+    <div class="modal-card modal-card-sm">
+      <div class="modal-header">
+        <h3 id="ratingModalTitle" class="modal-title">Content Rating</h3>
+        <button type="button" id="closeRatingBtn" class="modal-close" aria-label="Close rating modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="rating-modal-list" id="ratingToggle" role="group" aria-label="Content rating filter">
+          <button type="button" data-rating="PG" class="rating-btn rating-option active">
+            <span class="rating-option-title">PG</span>
+            <span class="rating-option-desc">Clean &amp; masked language (Default)</span>
+          </button>
+          <button type="button" data-rating="13+" class="rating-btn rating-option">
+            <span class="rating-option-title">13+</span>
+            <span class="rating-option-desc">Mild language allowed</span>
+          </button>
+          <button type="button" data-rating="18+" class="rating-btn rating-option">
+            <span class="rating-option-title">18+</span>
+            <span class="rating-option-desc">Uncensored quotes, no warnings</span>
+          </button>
+        </div>
+
+        <div class="modal-divider"></div>
+
+        <label class="rule-toggle-row">
+          <span>Show Community Rule banner</span>
+          <input id="ruleBannerToggle" type="checkbox" checked />
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
